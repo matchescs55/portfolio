@@ -1,1408 +1,377 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RETRO INDIE ARCADE - Portafolio de Videojuegos</title>
-
-  <!-- Tailwind CSS & Lucide Icons -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Google Pixel Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            retro: {
-              bg: '#0a0915',
-              card: '#121124',
-              panel: '#1a1836',
-              border: '#3b326d',
-              neonGreen: '#39ff14',
-              neonCyan: '#00f3ff',
-              neonPink: '#ff007f',
-              neonPurple: '#b026ff',
-              neonYellow: '#ffe600',
-              text: '#e2e8f0',
-              textMuted: '#94a3b8'
-            }
-          },
-          fontFamily: {
-            pixel: ['"Press Start 2P"', 'monospace'],
-            vt: ['"VT323"', 'monospace'],
-            silk: ['"Silkscreen"', 'cursive'],
-            sans: ['"Inter"', 'sans-serif']
-          },
-          boxShadow: {
-            arcade: '0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(0, 243, 255, 0.1)',
-            arcadeGreen: '0 0 15px rgba(57, 255, 20, 0.4)',
-            arcadePink: '0 0 15px rgba(255, 0, 127, 0.4)',
-            pixel: '4px 4px 0px #000, -2px -2px 0px rgba(255,255,255,0.1)'
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Custom Pixel Art Borders & Animations */
-    body {
-      background-color: #0a0915;
-      color: #e2e8f0;
-      font-family: 'Inter', sans-serif;
-      background-image: 
-        radial-gradient(circle at 50% 20%, rgba(176, 38, 255, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 40%),
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
-    }
-
-    /* CRT Scanline Overlay Effect */
-    .scanlines {
-      position: relative;
-      overflow: hidden;
-    }
-    .scanlines::before {
-      content: " ";
-      display: block;
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-      background-size: 100% 4px;
-      z-index: 40;
-      pointer-events: none;
-      opacity: 0.6;
-    }
-
-    /* CRT Flicker */
-    @keyframes crtFlicker {
-      0% { opacity: 0.99; }
-      50% { opacity: 1; }
-      100% { opacity: 0.98; }
-    }
-    .crt-screen {
-      animation: crtFlicker 0.15s infinite;
-    }
-
-    .pixel-btn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.75rem 1.25rem;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.1s ease;
-      user-select: none;
-      border: 2px solid #000;
-      box-shadow: inset -3px -3px 0px rgba(0, 0, 0, 0.4), inset 3px 3px 0px rgba(255, 255, 255, 0.3);
-    }
-    .pixel-btn:active {
-      transform: translate(2px, 2px);
-      box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.6);
-    }
-
-    .pixel-btn-green {
-      background-color: #22c55e;
-      color: #000;
-    }
-    .pixel-btn-green:hover {
-      background-color: #39ff14;
-      box-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
-    }
-
-    .pixel-btn-cyan {
-      background-color: #06b6d4;
-      color: #000;
-    }
-    .pixel-btn-cyan:hover {
-      background-color: #00f3ff;
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
-    }
-
-    .pixel-btn-purple {
-      background-color: #a855f7;
-      color: #fff;
-    }
-    .pixel-btn-purple:hover {
-      background-color: #b026ff;
-      box-shadow: 0 0 15px rgba(176, 38, 255, 0.6);
-    }
-
-    .pixel-btn-pink {
-      background-color: #ec4899;
-      color: #fff;
-    }
-    .pixel-btn-pink:hover {
-      background-color: #ff007f;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
-    }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0a0915;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #3b326d;
-      border: 2px solid #0a0915;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #00f3ff;
-    }
-
-    .glow-cyan {
-      text-shadow: 0 0 8px rgba(0, 243, 255, 0.7);
-    }
-    .glow-green {
-      text-shadow: 0 0 8px rgba(57, 255, 20, 0.7);
-    }
-    .glow-pink {
-      text-shadow: 0 0 8px rgba(255, 0, 127, 0.7);
-    }
-    .glow-yellow {
-      text-shadow: 0 0 8px rgba(255, 230, 0, 0.7);
-    }
-
-    /* Frame Styles for Customizer */
-    .frame-neon-cyan { border: 8px solid #00f3ff; box-shadow: 0 0 20px #00f3ff; }
-    .frame-neon-pink { border: 8px solid #ff007f; box-shadow: 0 0 20px #ff007f; }
-    .frame-arcade-gold { border: 8px ridge #ffe600; box-shadow: 0 0 20px #ffe600; }
-    .frame-pixel-dark { border: 8px dashed #3b326d; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RETRO INDIE ARCADE · Portafolio de videojuegos</title>
+<meta name="description" content="Colección de videojuegos indie jugables en el navegador.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0915;--card:#121124;--pan:#1a1836;--bd:#3b326d;--g:#39ff14;--c:#00f3ff;--p:#ff007f;--v:#b026ff;--y:#ffe600;--t:#e2e8f0;--m:#a3aed0}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;color:var(--t);font:15px/1.55 system-ui,"Segoe UI",sans-serif;
+background:radial-gradient(circle at 50% 0,rgba(176,38,255,.18),transparent 45%),linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/24px 24px,var(--bg)}
+.px,h1,h2,h3,.btn,.logo{font-family:"Press Start 2P","Courier New",monospace;line-height:1.6}
+.vt{font-family:VT323,"Courier New",monospace;font-size:21px}
+:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:99;background:var(--y);color:#000;padding:8px}
+header{position:sticky;top:0;z-index:30;background:rgba(10,9,21,.95);backdrop-filter:blur(6px);border-bottom:4px solid var(--bd)}
+.bar{max-width:1200px;margin:auto;padding:10px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.logo{color:var(--c);text-decoration:none;font-size:13px;text-shadow:0 0 8px rgba(0,243,255,.7)}.logo small{display:block;color:var(--g);font:21px VT323,monospace;letter-spacing:2px}
+nav{display:flex;gap:4px;overflow-x:auto;max-width:100%}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--m);font:10px "Press Start 2P",monospace;padding:10px 8px;cursor:pointer;white-space:nowrap}
+nav button:hover{color:#fff}nav button.on{color:var(--c);border-color:var(--c)}
+.tools{display:flex;gap:8px}
+.tg{background:var(--card);border:2px solid var(--bd);color:var(--m);font:18px VT323,monospace;padding:4px 10px;cursor:pointer}.tg:hover{border-color:var(--c);color:var(--c)}
+main{flex:1;width:100%;max-width:1200px;margin:auto;padding:24px 16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:10px;padding:12px 14px;background:#22c55e;color:#000;border:2px solid #000;cursor:pointer;text-decoration:none;
+box-shadow:inset -3px -3px rgba(0,0,0,.4),inset 3px 3px rgba(255,255,255,.3);transition:filter .1s}
+.btn:hover{filter:brightness(1.2)}.btn:active{transform:translate(2px,2px)}
+.btn.c{background:#06b6d4}.btn.p{background:#ec4899;color:#fff}.btn.v{background:#a855f7;color:#fff}.btn.d{background:#dc2626;color:#fff}.btn.s{padding:7px 9px;font-size:9px}.btn.w{width:100%}
+.box{background:var(--pan);border:4px solid var(--bd);padding:22px;box-shadow:0 0 15px rgba(0,243,255,.2)}
+.hero h1{font-size:clamp(20px,4.5vw,36px);color:var(--g);text-shadow:0 0 8px rgba(57,255,20,.7);margin:0 0 12px}
+.hero p{max-width:62ch;color:var(--m);margin:0 0 18px}.hero .vt{color:var(--c)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select,textarea{background:var(--bg);color:var(--t);border:2px solid var(--bd);padding:9px;font:inherit;border-radius:0;max-width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--c);outline:0}
+label.f{display:block;font:9px "Press Start 2P",monospace;color:var(--m);margin:12px 0 5px}.f+input,.f+select,.f+textarea,.w100{width:100%}
+.filters{background:var(--card);border:2px solid var(--bd);padding:14px;margin:20px 0;display:grid;gap:12px}
+.chip{background:var(--bg);color:var(--m);border:1px solid var(--bd);padding:2px 8px;font-size:12px;cursor:pointer}.chip:hover,.chip.on{border-color:var(--c);color:var(--c)}.chip.on{background:var(--c);color:#000}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+.card{background:var(--card);border:4px solid var(--bd);display:flex;flex-direction:column;box-shadow:4px 4px 0 #000;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--c);transform:translateY(-3px)}
+.card .im{position:relative;border-bottom:4px solid var(--bd);background:#000}.card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.gen{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.85);color:var(--c);border:1px solid var(--bd);padding:0 8px;font:17px VT323,monospace}
+.card .b{padding:14px;flex:1;display:flex;flex-direction:column;gap:8px}.card h3{font-size:11px;margin:0;color:var(--t)}.card p{margin:0;color:var(--m);font-size:13px;flex:1}
+.tags span{display:inline-block;background:var(--bg);border:1px solid var(--bd);color:var(--m);font-size:10px;padding:1px 6px;margin:0 4px 4px 0}
+.empty{text-align:center;padding:50px 16px;border:2px dashed var(--bd);background:var(--card)}
+.two{display:grid;grid-template-columns:1fr;gap:22px}@media(min-width:900px){.two{grid-template-columns:7fr 5fr}.two.d{grid-template-columns:5fr 7fr}}
+.ai{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--bg);border:2px solid var(--bd);padding:8px;margin-bottom:8px}
+.ai img{width:48px;height:32px;object-fit:cover;border:1px solid var(--bd);flex:none}.ai .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.ai .n small{display:block;color:var(--m)}
+.warn{border:2px dashed var(--y);color:var(--y);padding:10px;font-size:13px;margin:12px 0}
+canvas{max-width:100%;height:auto;background:#000;border:2px solid var(--bd)}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.93);display:none;align-items:center;justify-content:center;padding:10px}.modal.on{display:flex}
+.mb{background:var(--pan);border:4px solid var(--bd);width:100%;max-width:1100px;max-height:96vh;overflow:auto}
+.mh{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 12px;background:var(--card);border-bottom:4px solid var(--bd);flex-wrap:wrap}
+.mh h2{font-size:12px;margin:0;color:var(--c)}
+.fr{position:relative;aspect-ratio:16/9;background:#000;border:4px solid var(--bd);margin:12px}.fr iframe{width:100%;height:100%;border:0}
+.ld{position:absolute;inset:0;display:grid;place-items:center;color:var(--g);pointer-events:none}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:90;background:var(--card);border:3px solid var(--g);padding:10px 16px;max-width:92vw;font-size:14px}#toast.err{border-color:var(--p)}
+footer{border-top:4px solid var(--bd);background:var(--pan);text-align:center;padding:18px;color:var(--m);font-size:12px}
+.crt{position:fixed;inset:0;z-index:70;pointer-events:none;display:none;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.28) 2px 4px)}body.crt-on .crt{display:block}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-retro-neonCyan selection:text-black">
-
-  <!-- Top Navigation Bar -->
-  <header class="sticky top-0 z-30 bg-retro-bg/95 backdrop-blur-md border-b-4 border-retro-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
-        
-        <!-- Logo -->
-        <a href="#" onclick="switchTab('catalog'); play8BitSound('click');" class="flex items-center gap-3 group">
-          <div class="w-10 h-10 bg-retro-neonCyan/20 border-2 border-retro-neonCyan flex items-center justify-center text-retro-neonCyan group-hover:scale-105 transition-transform">
-            <i data-lucide="gamepad-2" class="w-6 h-6"></i>
-          </div>
-          <div>
-            <span class="font-pixel text-xs sm:text-sm text-retro-neonCyan glow-cyan block">RETRO_INDIE</span>
-            <span class="font-vt text-lg text-retro-neonGreen tracking-widest block -mt-1">PORTAFOLIO DE 13 JUEGOS</span>
-          </div>
-        </a>
-
-        <!-- Main Navigation Links -->
-        <nav class="hidden md:flex items-center gap-5 font-pixel text-xs">
-          <button onclick="switchTab('catalog'); play8BitSound('click');" id="nav-catalog" class="nav-link text-retro-neonCyan flex items-center gap-2 hover:text-white transition-colors">
-            <i data-lucide="layout-grid" class="w-4 h-4"></i> COLECCIÓN (13)
-          </button>
-          <button onclick="switchTab('decorator'); play8BitSound('click');" id="nav-decorator" class="nav-link text-retro-textMuted flex items-center gap-2 hover:text-retro-neonPink transition-colors">
-            <i data-lucide="palette" class="w-4 h-4"></i> DECORADOR
-          </button>
-          <button onclick="switchTab('about'); play8BitSound('click');" id="nav-about" class="nav-link text-retro-textMuted flex items-center gap-2 hover:text-white transition-colors">
-            <i data-lucide="user" class="w-4 h-4"></i> SOBRE MÍ
-          </button>
-          <button onclick="switchTab('admin'); play8BitSound('click');" id="nav-admin" class="nav-link text-retro-textMuted flex items-center gap-2 hover:text-retro-neonYellow transition-colors">
-            <i data-lucide="sliders" class="w-4 h-4"></i> ADMIN
-          </button>
-          <button onclick="switchTab('deploy'); play8BitSound('click');" id="nav-deploy" class="nav-link text-retro-textMuted flex items-center gap-2 hover:text-retro-neonCyan transition-colors">
-            <i data-lucide="file-code" class="w-4 h-4"></i> NETLIFY
-          </button>
-        </nav>
-
-        <!-- Right Side Controls -->
-        <div class="flex items-center gap-3">
-          <button id="sound-toggle" onclick="toggleSound()" title="Sonido 8-bits" class="p-2 border-2 border-retro-border bg-retro-card hover:border-retro-neonYellow text-retro-neonYellow text-xs flex items-center gap-1 font-vt text-sm">
-            <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">SFX: <span id="sound-status">ON</span></span>
-          </button>
-
-          <button id="crt-toggle" title="Alternar efecto CRT" onclick="toggleCRT()" class="p-2 border-2 border-retro-border bg-retro-card hover:border-retro-neonCyan text-retro-textMuted hover:text-retro-neonCyan text-xs flex items-center gap-1 font-vt text-sm">
-            <i data-lucide="tv" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">CRT: <span id="crt-status" class="text-retro-neonGreen">OFF</span></span>
-          </button>
-
-          <button onclick="switchTab('decorator'); play8BitSound('click');" class="pixel-btn pixel-btn-pink text-xs">
-            <i data-lucide="sparkles" class="w-4 h-4 mr-1"></i> DECORAR
-          </button>
-
-          <button onclick="toggleMobileMenu()" class="md:hidden p-2 border-2 border-retro-border bg-retro-card text-retro-text">
-            <i data-lucide="menu" class="w-6 h-6"></i>
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Mobile Navigation Drawer -->
-    <div id="mobile-menu" class="hidden md:hidden border-t-2 border-retro-border bg-retro-panel px-4 pt-2 pb-4 space-y-2 font-pixel text-xs">
-      <button onclick="switchTab('catalog'); toggleMobileMenu();" class="w-full text-left py-3 px-2 text-retro-neonCyan border-b border-retro-border flex items-center gap-2">
-        <i data-lucide="layout-grid" class="w-4 h-4"></i> Colección (13 Juegos)
-      </button>
-      <button onclick="switchTab('decorator'); toggleMobileMenu();" class="w-full text-left py-3 px-2 text-retro-neonPink border-b border-retro-border flex items-center gap-2">
-        <i data-lucide="palette" class="w-4 h-4"></i> Estudió Decorador de Portadas
-      </button>
-      <button onclick="switchTab('about'); toggleMobileMenu();" class="w-full text-left py-3 px-2 text-retro-text flex items-center gap-2 border-b border-retro-border">
-        <i data-lucide="user" class="w-4 h-4"></i> Sobre Mí
-      </button>
-      <button onclick="switchTab('admin'); toggleMobileMenu();" class="w-full text-left py-3 px-2 text-retro-neonYellow flex items-center gap-2 border-b border-retro-border">
-        <i data-lucide="sliders" class="w-4 h-4"></i> Panel de Administración
-      </button>
-      <button onclick="switchTab('deploy'); toggleMobileMenu();" class="w-full text-left py-3 px-2 text-retro-neonGreen flex items-center gap-2">
-        <i data-lucide="file-code" class="w-4 h-4"></i> Configuración Netlify
-      </button>
-    </div>
-  </header>
-
-  <!-- Dynamic Views Container -->
-  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="app-container">
-
-    <!-- ================= VIEW 1: CATALOG ================= -->
-    <section id="view-catalog" class="space-y-8">
-      
-      <!-- Retro Hero Section -->
-      <div class="relative bg-retro-panel border-4 border-retro-border p-6 sm:p-10 rounded-none shadow-arcade overflow-hidden">
-        <div class="relative z-10 max-w-3xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 bg-retro-neonPurple/20 border border-retro-neonPurple text-retro-neonPurple font-pixel text-[10px] mb-4">
-            <span class="w-2 h-2 rounded-full bg-retro-neonPurple animate-pulse"></span> 13 JUEGOS NETLIFY INTEGRADOS
-          </div>
-          
-          <h1 class="font-pixel text-2xl sm:text-4xl text-retro-neonGreen glow-green mb-4 leading-relaxed">
-            COLECCIÓN DE JUEGOS INDIE
-          </h1>
-          
-          <p class="font-vt text-xl sm:text-2xl text-retro-neonCyan glow-cyan mb-4">
-            "13 Experiencias Arcade jugables en navegador desde Netlify."
-          </p>
-          
-          <p class="text-retro-textMuted text-sm sm:text-base leading-relaxed mb-6">
-            Explora la colección completa. Haz clic en <strong>"JUGAR AHORA"</strong> en cualquiera de los 13 títulos para cargarlos directamente mediante iframe, o utiliza la herramienta <strong>DECORADOR</strong> para personalizarlos.
-          </p>
-
-          <div class="flex flex-wrap gap-4 font-pixel text-xs">
-            <a href="#game-grid" onclick="play8BitSound('click');" class="pixel-btn pixel-btn-green">
-              <i data-lucide="play" class="w-4 h-4 mr-2"></i> EXPLORAR CATÁLOGO
-            </a>
-            <button onclick="switchTab('decorator'); play8BitSound('click');" class="pixel-btn pixel-btn-pink">
-              <i data-lucide="palette" class="w-4 h-4 mr-2"></i> DECORAR IMÁGENES
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filters Toolbar -->
-      <div id="game-grid" class="bg-retro-card border-2 border-retro-border p-4 sm:p-6 space-y-4">
-        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          
-          <!-- Search Bar -->
-          <div class="relative flex-1">
-            <i data-lucide="search" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-retro-textMuted"></i>
-            <input type="text" id="search-input" oninput="filterGames()" placeholder="Buscar título (ej. Tinyheroes, Viking, Snake, Unity)..." class="w-full pl-10 pr-4 py-2.5 bg-retro-bg border-2 border-retro-border text-retro-text placeholder-retro-textMuted font-sans text-sm focus:outline-none focus:border-retro-neonCyan">
-          </div>
-
-          <!-- Genre Filter -->
-          <div class="flex items-center gap-2">
-            <label class="font-pixel text-[10px] text-retro-neonCyan whitespace-nowrap"><i data-lucide="filter" class="w-3 h-3 inline"></i> GÉNERO:</label>
-            <select id="genre-select" onchange="filterGames()" class="bg-retro-bg border-2 border-retro-border text-retro-text font-sans text-sm px-3 py-2 focus:outline-none focus:border-retro-neonCyan">
-              <option value="ALL">Todos los géneros</option>
-              <option value="Plataformas">Plataformas</option>
-              <option value="Arcade">Arcade</option>
-              <option value="Carreras">Carreras</option>
-              <option value="Acción / Shooter">Acción / Shooter</option>
-              <option value="Aventura / RPG">Aventura / RPG</option>
-              <option value="Habilidad / Puzzle">Habilidad / Puzzle</option>
-            </select>
-          </div>
-
-        </div>
-
-        <!-- Tag Cloud -->
-        <div class="flex items-center gap-2 flex-wrap pt-2 border-t border-retro-border/50 text-xs">
-          <span class="font-pixel text-[9px] text-retro-textMuted">FILTRAR ETIQUETA:</span>
-          <div id="tag-cloud" class="flex flex-wrap gap-2"></div>
-        </div>
-
-        <!-- Stats Bar -->
-        <div class="flex items-center justify-between text-xs text-retro-textMuted pt-2 font-vt text-lg">
-          <div>PUBLICADOS: <span id="game-count-display" class="text-retro-neonCyan font-bold">13</span> JUEGOS EN NETLIFY</div>
-          <div id="active-filter-indicator" class="text-retro-neonYellow"></div>
-        </div>
-      </div>
-
-      <!-- Games Grid Container -->
-      <div id="catalog-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-      <!-- Empty State -->
-      <div id="empty-catalog-state" class="hidden text-center py-16 bg-retro-card border-2 border-dashed border-retro-border p-8">
-        <i data-lucide="ghost" class="w-16 h-16 mx-auto text-retro-textMuted mb-4 animate-bounce"></i>
-        <h3 class="font-pixel text-sm text-retro-neonPink mb-2">NO SE ENCONTRARON JUEGOS</h3>
-        <p class="text-retro-textMuted text-sm max-w-md mx-auto mb-6">Prueba a restablecer la búsqueda o seleccionar otro filtro.</p>
-        <button onclick="resetFilters()" class="pixel-btn pixel-btn-cyan text-xs">RESTABLECER FILTROS</button>
-      </div>
-
-    </section>
-
-    <!-- ================= VIEW 2: IMAGE CUSTOMIZER & DECORATOR STUDIO ================= -->
-    <section id="view-decorator" class="hidden space-y-8">
-      
-      <div class="bg-retro-panel border-4 border-retro-border p-6 sm:p-8 space-y-6 shadow-arcade">
-        <div>
-          <h2 class="font-pixel text-xl text-retro-neonPink glow-pink flex items-center gap-2">
-            <i data-lucide="palette" class="w-6 h-6"></i> ESTUDIO DECORADOR DE IMÁGENES Y PORTADAS
-          </h2>
-          <p class="font-vt text-xl text-retro-textMuted">Diseña, aplica filtros retro, marcos pixelados y stickers a cualquier juego de tu colección</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <!-- Control Panel (Left 5 Cols) -->
-          <div class="lg:col-span-5 bg-retro-card border-2 border-retro-border p-5 space-y-4 text-xs">
-            
-            <!-- Target Game Selector -->
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-neonCyan mb-1">1. SELECCIONA EL JUEGO A DECORAR</label>
-              <select id="decorator-game-select" onchange="loadGameIntoDecorator()" class="w-full bg-retro-bg border-2 border-retro-border p-2 text-retro-text font-sans text-sm focus:outline-none focus:border-retro-neonCyan">
-                <!-- Options dynamically populated -->
-              </select>
-            </div>
-
-            <!-- Image Source Input -->
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-neonYellow mb-1">2. CARGAR IMAGEN DE ORIGEN</label>
-              <div class="space-y-2">
-                <input type="text" id="decorator-img-url" placeholder="Pegar URL de imagen (https://...)" class="w-full bg-retro-bg border-2 border-retro-border p-2 text-retro-text font-mono text-xs">
-                <div class="flex items-center gap-2">
-                  <label class="pixel-btn pixel-btn-cyan text-[9px] w-full cursor-pointer">
-                    <i data-lucide="upload" class="w-3 h-3 mr-1"></i> Subir Archivo Local
-                    <input type="file" accept="image/*" onchange="handleDecoratorFileUpload(event)" class="hidden">
-                  </label>
-                  <button onclick="applyDecoratorURL()" class="pixel-btn pixel-btn-purple text-[9px]">Cargar URL</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Pixel Art & Color Filter Controls -->
-            <div class="space-y-3 pt-3 border-t border-retro-border">
-              <label class="block font-pixel text-[10px] text-retro-neonGreen">3. FILTROS RETRO Y PÍXEL</label>
-
-              <div class="grid grid-cols-2 gap-2">
-                <button onclick="setDecoratorFilter('none')" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-left font-mono">Normal</button>
-                <button onclick="setDecoratorFilter('pixelate')" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonGreen text-left font-mono">Efecto Píxel 16-Bit</button>
-                <button onclick="setDecoratorFilter('cyberpunk')" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonPink text-left font-mono">Cyberpunk Neón</button>
-                <button onclick="setDecoratorFilter('monochrome')" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonYellow text-left font-mono">GameBoy Verde</button>
-              </div>
-            </div>
-
-            <!-- Frame Selection -->
-            <div class="space-y-2 pt-3 border-t border-retro-border">
-              <label class="block font-pixel text-[10px] text-retro-neonCyan">4. MARCO ARCADE</label>
-              <select id="decorator-frame-select" onchange="setDecoratorFrame()" class="w-full bg-retro-bg border-2 border-retro-border p-2 text-retro-text font-sans text-sm">
-                <option value="none">Sin Marco</option>
-                <option value="frame-neon-cyan">Neón Cían Brillante</option>
-                <option value="frame-neon-pink">Neón Magenta Arcade</option>
-                <option value="frame-arcade-gold">Borde Dorado Retro</option>
-                <option value="frame-pixel-dark">Borde Píxel Discontinuo</option>
-              </select>
-            </div>
-
-            <!-- Text Sticker Overlay -->
-            <div class="space-y-2 pt-3 border-t border-retro-border">
-              <label class="block font-pixel text-[10px] text-retro-neonPink">5. PEGATINA / TEXTO ARCADE</label>
-              <input type="text" id="decorator-text-input" placeholder="Ej. PRESS START, HIGH SCORE, LVL 99" oninput="updateDecoratorCanvas()" class="w-full bg-retro-bg border-2 border-retro-border p-2 text-retro-text font-mono text-xs">
-              
-              <div class="flex items-center gap-2">
-                <select id="decorator-text-color" onchange="updateDecoratorCanvas()" class="bg-retro-bg border border-retro-border p-1 text-xs">
-                  <option value="#39ff14">Verde Neón</option>
-                  <option value="#00f3ff">Cían Neón</option>
-                  <option value="#ff007f">Pink Neón</option>
-                  <option value="#ffe600">Amarillo Arcade</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Save & Apply Actions -->
-            <div class="pt-4 border-t border-retro-border space-y-2">
-              <button onclick="saveDecoratedCoverToGame()" class="pixel-btn pixel-btn-green w-full text-xs">
-                <i data-lucide="check-circle" class="w-4 h-4 mr-2"></i> ASIGNAR COMO PORTADA DEL JUEGO
-              </button>
-              <button onclick="downloadDecoratedCanvas()" class="pixel-btn pixel-btn-cyan w-full text-xs">
-                <i data-lucide="download" class="w-4 h-4 mr-2"></i> DESCARGAR IMAGEN
-              </button>
-            </div>
-
-          </div>
-
-          <!-- Canvas Live Preview Area (Right 7 Cols) -->
-          <div class="lg:col-span-7 bg-retro-bg border-4 border-retro-border p-6 flex flex-col items-center justify-center space-y-4 min-h-[420px]">
-            <h3 class="font-pixel text-xs text-retro-neonCyan">VISTA PREVIA EN TIEMPO REAL</h3>
-
-            <div id="decorator-frame-wrapper" class="relative max-w-full overflow-hidden transition-all duration-200">
-              <canvas id="decorator-canvas" width="600" height="360" class="max-w-full h-auto bg-black border-2 border-retro-border shadow-pixel"></canvas>
-            </div>
-
-            <p class="text-retro-textMuted text-xs text-center font-vt text-lg">
-              Esta herramienta procesa la imagen para darle estética retro de consola y guardarla en la colección.
-            </p>
-          </div>
-
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ================= VIEW 3: ABOUT ================= -->
-    <section id="view-about" class="hidden space-y-8">
-      <div class="bg-retro-panel border-4 border-retro-border p-6 sm:p-10 space-y-8">
-        
-        <div class="flex flex-col md:flex-row items-center gap-8 border-b-2 border-retro-border pb-8">
-          <div class="w-36 h-36 bg-retro-bg border-4 border-retro-neonCyan relative flex-shrink-0 p-2 shadow-arcade">
-            <svg class="w-full h-full text-retro-neonCyan" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4 4h16v2H4zm2 4h12v2H6zm-2 4h16v6H4zm4 8h8v2H8z"/>
-            </svg>
-            <div class="absolute -bottom-2 -right-2 bg-retro-neonGreen text-black font-pixel text-[9px] px-2 py-0.5 border border-black">
-              DEV_NETLIFY_MASTER
-            </div>
-          </div>
-
-          <div class="space-y-3 text-center md:text-left">
-            <h2 class="font-pixel text-2xl text-retro-neonCyan glow-cyan">DESARROLLADOR DE VIDEOJUEGOS INDIE</h2>
-            <p class="font-vt text-2xl text-retro-neonGreen">Colección de 13 Videojuegos Web alojados en Netlify</p>
-            <p class="text-retro-textMuted text-sm max-w-2xl leading-relaxed">
-              Esta plataforma consolida mis 13 desarrollos web independientes de videojuegos. Todos están integrados y listos para ejecutarse directamente en ventanas emergentes o pantalla completa.
-            </p>
-
-            <div class="flex flex-wrap justify-center md:justify-start gap-3 pt-2 font-pixel text-[10px]">
-              <span class="px-2.5 py-1 bg-retro-bg border border-retro-border text-retro-neonYellow">Netlify Hosting</span>
-              <span class="px-2.5 py-1 bg-retro-bg border border-retro-border text-retro-neonCyan">HTML5 Canvas / iframe</span>
-              <span class="px-2.5 py-1 bg-retro-bg border border-retro-border text-retro-neonGreen">JavaScript Vanilla</span>
-              <span class="px-2.5 py-1 bg-retro-bg border border-retro-border text-retro-neonPink">Unity WebGL</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 13 Integrated Games Summary List -->
-        <div class="space-y-4">
-          <h3 class="font-pixel text-xs text-retro-neonYellow">LISTADO COMPLETO DE LOS 13 JUEGOS NETLIFY</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 font-mono text-xs">
-            <a href="https://tinyheroesescape.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">1. Tinyheroes <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://tinyheroes2.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">2. Tinyheroes 2 <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://celadon-treacle-2a0ab3.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">3. Cat Jump <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://racerfast.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">4. Racer Fast <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://glittery-boba-550129.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">5. Sky Cruiser <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://zippy-salamander-68220e.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">6. Halloween Shooter <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://profound-truffle-d4dab8.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">7. Don't Fall Down <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://singular-travesseiro-cc80cb.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">8. Yellow Jump Madness <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://stirring-pavlova-cd119e.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">9. Fishy Fishy <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://lighthearted-biscuit-0e20bd.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">10. Unity Game <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://cheerful-lollipop-f08e47.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">11. Snake <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://majestic-vacherin-a434d3.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">12. Button Game <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-            <a href="https://kaleidoscopic-travesseiro-5b1a83.netlify.app/" target="_blank" class="p-2 bg-retro-bg border border-retro-border hover:border-retro-neonCyan text-retro-neonCyan truncate flex items-center justify-between">13. Viking <i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ================= VIEW 4: ADMIN PANEL ================= -->
-    <section id="view-admin" class="hidden space-y-8">
-      
-      <div class="bg-retro-panel border-4 border-retro-border p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-arcade">
-        <div>
-          <h2 class="font-pixel text-xl text-retro-neonYellow glow-yellow flex items-center gap-2">
-            <i data-lucide="shield-alert" class="w-6 h-6"></i> PANEL DE ADMINISTRACIÓN (13 JUEGOS)
-          </h2>
-          <p class="font-vt text-lg text-retro-textMuted">Administra los enlaces de Netlify, metadatos y portadas decoradas</p>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="exportJSONCatalog()" class="pixel-btn pixel-btn-green text-[10px]">
-            <i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> EXPORTAR JSON
-          </button>
-          <label class="pixel-btn pixel-btn-cyan text-[10px] cursor-pointer">
-            <i data-lucide="upload" class="w-3.5 h-3.5 mr-1"></i> IMPORTAR JSON
-            <input type="file" id="import-json-file" accept=".json" onchange="importJSONCatalog(event)" class="hidden">
-          </label>
-          <button onclick="resetDefaultCatalog()" class="pixel-btn pixel-btn-purple text-[10px]" title="Restablecer los 13 juegos iniciales">
-            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 mr-1"></i> REINICIAR (13)
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- Form (Left 7 Cols) -->
-        <div class="lg:col-span-7 bg-retro-card border-4 border-retro-border p-6 space-y-6">
-          <div class="flex items-center justify-between border-b-2 border-retro-border pb-4">
-            <h3 id="form-title" class="font-pixel text-xs text-retro-neonCyan">CREAR O EDITAR JUEGO</h3>
-            <button id="cancel-edit-btn" onclick="resetAdminForm()" class="hidden text-xs text-retro-neonPink hover:underline font-pixel">
-              CANCELAR EDICIÓN
-            </button>
-          </div>
-
-          <form id="game-form" onsubmit="handleGameFormSubmit(event)" class="space-y-4 text-xs">
-            <input type="hidden" id="form-game-id" value="">
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">TÍTULO DEL JUEGO *</label>
-                <input type="text" id="form-title-input" required oninput="generateSlug()" placeholder="Ej. Viking Escape" class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text focus:outline-none focus:border-retro-neonCyan font-sans text-sm">
-              </div>
-
-              <div>
-                <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">SLUG / ID ÚNICO *</label>
-                <input type="text" id="form-slug-input" required placeholder="viking" class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text focus:outline-none focus:border-retro-neonCyan font-mono text-sm">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">GÉNERO *</label>
-                <select id="form-genre-input" required class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text focus:outline-none focus:border-retro-neonCyan font-sans text-sm">
-                  <option value="Plataformas">Plataformas</option>
-                  <option value="Arcade">Arcade</option>
-                  <option value="Carreras">Carreras</option>
-                  <option value="Acción / Shooter">Acción / Shooter</option>
-                  <option value="Aventura / RPG">Aventura / RPG</option>
-                  <option value="Habilidad / Puzzle">Habilidad / Puzzle</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">ESTADO</label>
-                <select id="form-published-input" class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text focus:outline-none focus:border-retro-neonCyan font-sans text-sm">
-                  <option value="true">Publicado (Visible)</option>
-                  <option value="false">Borrador (Oculto)</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">URL NETLIFY DE JUEGO (IFRAME) *</label>
-              <input type="text" id="form-playurl-input" required placeholder="https://mi-juego.netlify.app/" class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-neonCyan font-mono text-xs">
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">ETIQUETAS (separadas por comas)</label>
-              <input type="text" id="form-tags-input" placeholder="Aventura, Netlify, Pixel Art, Retro" class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text font-sans text-sm">
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">DESCRIPCIÓN CORTA *</label>
-              <input type="text" id="form-short-desc-input" required maxlength="120" placeholder="Resumen corto..." class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text font-sans text-sm">
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">DESCRIPCIÓN DETALLADA</label>
-              <textarea id="form-full-desc-input" rows="3" placeholder="Detalles de controles e historia..." class="w-full bg-retro-bg border-2 border-retro-border p-2.5 text-retro-text font-sans text-sm"></textarea>
-            </div>
-
-            <div>
-              <label class="block font-pixel text-[10px] text-retro-textMuted mb-1">URL PORTADA / IMAGEN</label>
-              <input type="text" id="form-cover-input" required placeholder="https://..." class="w-full bg-retro-bg border-2 border-retro-border p-2 text-retro-text font-mono text-xs">
-            </div>
-
-            <div class="pt-4 border-t border-retro-border flex items-center justify-end gap-3">
-              <button type="submit" class="pixel-btn pixel-btn-green text-xs w-full sm:w-auto">
-                <i data-lucide="save" class="w-4 h-4 mr-2"></i> GUARDAR JUEGO
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Catalog List (Right 5 Cols) -->
-        <div class="lg:col-span-5 space-y-4">
-          <div class="bg-retro-card border-4 border-retro-border p-4">
-            <h3 class="font-pixel text-xs text-retro-neonCyan mb-4 flex items-center justify-between">
-              <span>LISTA DE JUEGOS</span>
-              <span id="admin-game-count" class="text-retro-neonGreen font-mono">13 JUEGOS</span>
-            </h3>
-
-            <div id="admin-games-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-1"></div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ================= VIEW 5: DEPLOY ================= -->
-    <section id="view-deploy" class="hidden space-y-8">
-      <div class="bg-retro-panel border-4 border-retro-border p-6 sm:p-8 space-y-6">
-        <div>
-          <h2 class="font-pixel text-xl text-retro-neonPink glow-pink flex items-center gap-2">
-            <i data-lucide="rocket" class="w-6 h-6"></i> CONFIGURACIÓN Y DESPLIEGUE EN NETLIFY
-          </h2>
-          <p class="font-vt text-xl text-retro-textMuted">Cómo publicar esta web completa en Netlify para que incluya todos los 13 juegos</p>
-        </div>
-
-        <div class="bg-retro-card border-2 border-retro-border p-4 space-y-3 text-xs text-retro-textMuted leading-relaxed">
-          <h3 class="font-pixel text-xs text-retro-neonGreen">PASOS PARA PUBLICAR EL PORTAFOLIO:</h3>
-          <ol class="list-decimal list-inside space-y-2">
-            <li>Guarda este archivo HTML en la carpeta raíz como <code class="text-retro-neonCyan bg-black px-1">index.html</code>.</li>
-            <li>Crea un repositorio en GitHub con este código.</li>
-            <li>Inicia sesión en <strong>Netlify.com</strong>, crea un sitio desde GitHub.</li>
-            <li>Configura el directorio de publicación como raíz (<code class="text-retro-neonYellow bg-black px-1">.</code>) o carpeta <code class="text-retro-neonYellow bg-black px-1">public</code>.</li>
-            <li>¡Listo! Tu portafolio retro con los 13 juegos quedará en línea al instante.</li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ================= MODAL: GAME PLAYER ================= -->
-  <div id="game-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-retro-panel border-4 border-retro-border w-full max-w-6xl my-auto relative shadow-arcade flex flex-col max-h-[95vh] overflow-hidden">
-      
-      <!-- Modal Header -->
-      <div class="bg-retro-card border-b-4 border-retro-border p-3 sm:p-4 flex items-center justify-between">
-        <div class="flex items-center gap-3 truncate">
-          <span class="w-3 h-3 rounded-full bg-retro-neonGreen animate-ping"></span>
-          <h3 id="modal-game-title" class="font-pixel text-xs sm:text-base text-retro-neonCyan glow-cyan truncate">
-            TITULO DEL JUEGO
-          </h3>
-          <span class="hidden sm:inline px-2 py-0.5 bg-retro-neonGreen/20 text-retro-neonGreen border border-retro-neonGreen font-pixel text-[9px]">
-            NETLIFY IFRAME
-          </span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button onclick="toggleFullscreenIframe()" class="pixel-btn pixel-btn-cyan text-[9px] py-1 px-2">
-            <i data-lucide="maximize" class="w-3 h-3 mr-1"></i> FULLSCREEN
-          </button>
-          <a id="modal-direct-link" href="#" target="_blank" class="pixel-btn pixel-btn-purple text-[9px] py-1 px-2">
-            <i data-lucide="external-link" class="w-3 h-3 mr-1"></i> NETLIFY LINK
-          </a>
-          <button onclick="closeGameModal(); play8BitSound('click');" class="text-retro-textMuted hover:text-retro-neonPink p-1">
-            <i data-lucide="x" class="w-6 h-6"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-3 sm:p-4 flex-grow overflow-y-auto space-y-4">
-        
-        <!-- Iframe Player -->
-        <div id="iframe-wrapper" class="relative bg-black border-4 border-retro-border aspect-video w-full overflow-hidden shadow-pixel">
-          <iframe id="game-iframe" class="w-full h-full border-0" allow="autoplay; keyboard; fullscreen" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
-        </div>
-
-        <!-- Game Info -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-sans text-xs">
-          <div class="md:col-span-2 space-y-2">
-            <h4 class="font-pixel text-xs text-retro-neonGreen">DESCRIPCIÓN</h4>
-            <p id="modal-game-desc" class="text-retro-text leading-relaxed"></p>
-          </div>
-
-          <div class="bg-retro-card p-3 border-2 border-retro-border space-y-2 font-vt text-lg">
-            <div>
-              <span class="text-retro-textMuted text-xs block font-pixel">GÉNERO</span>
-              <span id="modal-game-genre" class="text-retro-neonCyan"></span>
-            </div>
-            <div>
-              <span class="text-retro-textMuted text-xs block font-pixel">ETIQUETAS</span>
-              <div id="modal-game-tags" class="flex flex-wrap gap-1 font-sans text-xs mt-1"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+<div class="crt" aria-hidden="true"></div>
+<header><div class="bar">
+  <a class="logo" href="#catalog">RETRO_INDIE<small>PORTAFOLIO DE <span data-n>13</span> JUEGOS</small></a>
+  <nav aria-label="Principal">
+    <button id="n-catalog" data-a="tab" data-id="catalog">COLECCIÓN</button>
+    <button id="n-decor" data-a="tab" data-id="decor">DECORADOR</button>
+    <button id="n-about" data-a="tab" data-id="about">SOBRE MÍ</button>
+    <button id="n-admin" data-a="tab" data-id="admin">ADMIN</button>
+  </nav>
+  <div class="tools">
+    <button class="tg" id="sfx" aria-pressed="true" title="Sonido 8-bit">SFX: ON</button>
+    <button class="tg" id="crt" aria-pressed="false" title="Efecto CRT">CRT: OFF</button>
   </div>
+</div></header>
 
-  <!-- Footer -->
-  <footer class="mt-auto border-t-4 border-retro-border bg-retro-panel py-6 text-center text-xs text-retro-textMuted space-y-2">
-    <div class="font-pixel text-[10px] text-retro-neonCyan">
-      RETRO INDIE ARCADE &copy; 2026 - 13 JUEGOS NETLIFY INTEGRADOS
+<main id="main">
+<!-- CATÁLOGO -->
+<section id="v-catalog">
+  <div class="box hero">
+    <h1>COLECCIÓN DE JUEGOS INDIE</h1>
+    <p class="vt">Pequeños mundos, grandes ideas.</p>
+    <p>Juega directamente en el navegador. Elige un título y pulsa <strong>JUGAR</strong>; también puedes personalizar cada portada en el <strong>DECORADOR</strong>.</p>
+    <div class="row"><a class="btn" href="#games">▶ EXPLORAR</a><button class="btn p" data-a="tab" data-id="decor">DECORAR PORTADAS</button></div>
+  </div>
+  <div class="filters" id="games">
+    <div class="row">
+      <input class="w100" style="flex:1;min-width:200px" id="q" type="search" placeholder="Buscar por título, descripción o etiqueta" aria-label="Buscar juegos">
+      <select id="gsel" aria-label="Filtrar por género"></select>
     </div>
-  </footer>
-
-  <!-- App Logic JS -->
-  <script>
-    /* ================= 13 SPECIFIED NETLIFY GAMES INITIAL DATASET ================= */
-    const DEFAULT_GAMES = [
-      {
-        id: "tinyheroes",
-        title: "Tinyheroes",
-        description: "Una intrépida aventura de escape pixel art. Supera trampas y niveles peligrosos con tu héroe.",
-        fullDescription: "Tinyheroes Escape es un juego de plataformas de acción rápida donde debes guiar a tu pequeño héroe a través de calabozos llenos de sierras, pinchos y trampas mecánicas.",
-        genre: "Aventura / RPG",
-        tags: ["Aventura", "Escape", "Pixel Art", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://tinyheroesescape.netlify.app/",
-        published: true
-      },
-      {
-        id: "tinyheroes-2",
-        title: "Tinyheroes 2",
-        description: "La segunda entrega mejorada de Tinyheroes con nuevos enemigos, mecánicas y rompecabezas.",
-        fullDescription: "Continúa la secuela con niveles más desafiantes, habilidades especiales para el héroe y combates contra jefes de zona.",
-        genre: "Aventura / RPG",
-        tags: ["Aventura", "Secuela", "Netlify", "Pixel Art"],
-        cover: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://tinyheroes2.netlify.app/",
-        published: true
-      },
-      {
-        id: "cat-jump",
-        title: "Cat Jump",
-        description: "Guía a un ágil gatito dando saltos precisos entre plataformas verticales sin caer al vacío.",
-        fullDescription: "Cat Jump pone a prueba tus reflejos. Salta de pared en pared, esquiva obstáculos aéreos y recoge bocadillos de pescado.",
-        genre: "Plataformas",
-        tags: ["Plataformas", "Gatos", "Arcade", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://celadon-treacle-2a0ab3.netlify.app/",
-        published: true
-      },
-      {
-        id: "racer-fast",
-        title: "Racer Fast",
-        description: "Velocidad extrema en pistas retro. Esquiva el tráfico y acelera al máximo.",
-        fullDescription: "Un vibrante juego de carreras estilo arcade noventero. Toma el volante, derrapa en curvas cerradas y rompe récords de tiempo.",
-        genre: "Carreras",
-        tags: ["Carreras", "Velocidad", "Arcade", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://racerfast.netlify.app/",
-        published: true
-      },
-      {
-        id: "sky-cruiser",
-        title: "Sky Cruiser",
-        description: "Pilota una nave futurista a través del cielo esquivando obstáculos y cazando baterías de energía.",
-        fullDescription: "Sky Cruiser te pone al mando de un crucero aéreo en un mundo sci-fi. Maniobra entre estructuras gigantescas y acumula puntos.",
-        genre: "Acción / Shooter",
-        tags: ["Naves", "Sky", "Sci-Fi", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://glittery-boba-550129.netlify.app/",
-        published: true
-      },
-      {
-        id: "halloween-shooter",
-        title: "Halloween Shooter",
-        description: "Defiéndete de oleadas de calabazas, fantasmas y monstruos en este shooter con temática de Halloween.",
-        fullDescription: "Shooter arcade festivo donde disparas a criaturas nocturnas. Junta pociones mágicas y sobrevive a la noche mágica.",
-        genre: "Acción / Shooter",
-        tags: ["Halloween", "Shooter", "Arcade", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1509557965875-b88c97052f0e?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://zippy-salamander-68220e.netlify.app/",
-        published: true
-      },
-      {
-        id: "dont-fall-down",
-        title: "Don't Fall Down",
-        description: "Mantén el equilibrio en plataformas móviles desmoronadizas. ¡Un movimiento en falso y caerás!",
-        fullDescription: "Un frenético juego de supervivencia física. Muévete constantemente antes de que las losas del suelo desaparezcan bajo tus pies.",
-        genre: "Habilidad / Puzzle",
-        tags: ["Habilidad", "Supervivencia", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://profound-truffle-d4dab8.netlify.app/",
-        published: true
-      },
-      {
-        id: "yellow-jump-madness",
-        title: "Yellow Jump Madness",
-        description: "Saltos locos y velocidad con un personaje amarillo brillante. Rebotarás sin parar.",
-        fullDescription: "Desafío de rebotes interminables con una física de resorte hiperactiva. Calcula el ángulo perfecto para llegar más alto.",
-        genre: "Plataformas",
-        tags: ["Saltos", "Física", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://singular-travesseiro-cc80cb.netlify.app/",
-        published: true
-      },
-      {
-        id: "fishy-fishy",
-        title: "Fishy Fishy",
-        description: "Nada por las profundidades del océano, come peces más pequeños y evita a los depredadores.",
-        fullDescription: "Clásico juego de evolución acuática. Empiezas siendo un pececillo diminuto y debes crecer alimentándote sin convertirte en presa.",
-        genre: "Arcade",
-        tags: ["Peces", "Océano", "Casual", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://stirring-pavlova-cd119e.netlify.app/",
-        published: true
-      },
-      {
-        id: "unity-game",
-        title: "Unity Game WebGL",
-        description: "Experiencia interactiva desarrollada en el motor Unity exportada a WebGL en HTML5.",
-        fullDescription: "Demostración de alto rendimiento en Unity WebGL. Muestra gráficos renderizados en 3D/2D directamente en el navegador.",
-        genre: "Acción / Shooter",
-        tags: ["Unity", "WebGL", "3D", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://lighthearted-biscuit-0e20bd.netlify.app/",
-        published: true
-      },
-      {
-        id: "snake-game",
-        title: "Snake Classic",
-        description: "El legendario juego de la serpiente reinventado con gráficos de neón y sonidos arcade.",
-        fullDescription: "Controla a la serpiente, devora manzanas cibernéticas para crecer y evita chocar contra las paredes o contra tu propia cola.",
-        genre: "Arcade",
-        tags: ["Snake", "Clásico", "Retro", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://cheerful-lollipop-f08e47.netlify.app/",
-        published: true
-      },
-      {
-        id: "button-game",
-        title: "Button Challenge",
-        description: "¿Qué pasa si presionas el botón? Un intrigante y divertido mini-juego de reacción.",
-        fullDescription: "Experimento interactivo centrado en mecánicas simples pero adictivas alrededor de un gran botón misterioso.",
-        genre: "Habilidad / Puzzle",
-        tags: ["Button", "Puzzle", "Casual", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://majestic-vacherin-a434d3.netlify.app/",
-        published: true
-      },
-      {
-        id: "viking",
-        title: "Viking Escape",
-        description: "Combate como un feroz guerrero vikingo volando sobre un dragón y atacando bestias míticas.",
-        fullDescription: "Enfrenta a goblins, gárgolas y monstruos voladores mientras controlas a un vikingo armado con hachas mágicas.",
-        genre: "Acción / Shooter",
-        tags: ["Vikingo", "Dragones", "Acción", "Netlify"],
-        cover: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80",
-        playUrl: "https://kaleidoscopic-travesseiro-5b1a83.netlify.app/",
-        published: true
-      }
-    ];
-
-    /* Global State */
-    let games = [];
-    let activeTagFilter = null;
-    let audioCtx = null;
-    let soundEnabled = true;
-
-    /* Decorator State */
-    let decoratorImage = new Image();
-    decoratorImage.crossOrigin = "Anonymous";
-    let decoratorFilter = 'none';
-    let decoratorFrame = 'none';
-
-    window.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      loadCatalogState();
-      renderCatalog();
-      renderAdminCatalog();
-      populateTagCloud();
-      populateDecoratorSelector();
-      initDecoratorCanvas();
-    });
-
-    /* Audio Synth */
-    function play8BitSound(type) {
-      if (!soundEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        const now = audioCtx.currentTime;
-
-        if (type === 'click') {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(400, now);
-          osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-          gain.gain.setValueAtTime(0.1, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
-          osc.start(now);
-          osc.stop(now + 0.08);
-        } else if (type === 'open') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(220, now);
-          osc.frequency.exponentialRampToValueAtTime(660, now + 0.15);
-          gain.gain.setValueAtTime(0.15, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
-          osc.start(now);
-          osc.stop(now + 0.15);
-        }
-      } catch (e) {}
-    }
-
-    function toggleSound() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('sound-status').textContent = soundEnabled ? 'ON' : 'OFF';
-      document.getElementById('sound-icon').setAttribute('data-lucide', soundEnabled ? 'volume-2' : 'volume-x');
-      lucide.createIcons();
-    }
-
-    function toggleCRT() {
-      document.body.classList.toggle('scanlines');
-      const status = document.getElementById('crt-status');
-      status.textContent = document.body.classList.contains('scanlines') ? 'ON' : 'OFF';
-    }
-
-    /* Catalog Load / Save */
-    function loadCatalogState() {
-      const stored = localStorage.getItem('retro_indie_games_13');
-      if (stored) {
-        try {
-          games = JSON.parse(stored);
-        } catch (e) {
-          games = [...DEFAULT_GAMES];
-        }
-      } else {
-        games = [...DEFAULT_GAMES];
-        saveCatalogState();
-      }
-    }
-
-    function saveCatalogState() {
-      localStorage.setItem('retro_indie_games_13', JSON.stringify(games));
-    }
-
-    function switchTab(tabId) {
-      ['catalog', 'decorator', 'about', 'admin', 'deploy'].forEach(v => {
-        const el = document.getElementById(`view-${v}`);
-        const navEl = document.getElementById(`nav-${v}`);
-        if (v === tabId) {
-          el.classList.remove('hidden');
-          if (navEl) navEl.classList.add('text-retro-neonCyan');
-        } else {
-          el.classList.add('hidden');
-          if (navEl) navEl.classList.remove('text-retro-neonCyan');
-        }
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleMobileMenu() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    }
-
-    /* Catalog Search & Filtering */
-    function populateTagCloud() {
-      const cloud = document.getElementById('tag-cloud');
-      const tagsSet = new Set();
-      games.forEach(g => g.tags.forEach(t => tagsSet.add(t)));
-      
-      cloud.innerHTML = '';
-      tagsSet.forEach(tag => {
-        const badge = document.createElement('button');
-        badge.onclick = () => { play8BitSound('click'); filterByTag(tag); };
-        badge.className = `px-2 py-0.5 text-[10px] font-sans border transition-all ${
-          activeTagFilter === tag 
-            ? 'bg-retro-neonCyan text-black border-retro-neonCyan' 
-            : 'bg-retro-bg text-retro-textMuted border-retro-border hover:border-retro-neonCyan'
-        }`;
-        badge.textContent = `#${tag}`;
-        cloud.appendChild(badge);
-      });
-    }
-
-    function filterByTag(tag) {
-      activeTagFilter = activeTagFilter === tag ? null : tag;
-      populateTagCloud();
-      filterGames();
-    }
-
-    function filterGames() {
-      const search = document.getElementById('search-input').value.toLowerCase();
-      const genre = document.getElementById('genre-select').value;
-
-      const filtered = games.filter(game => {
-        if (!game.published) return false;
-        const matchesSearch = game.title.toLowerCase().includes(search) || 
-                              game.description.toLowerCase().includes(search) ||
-                              game.tags.some(t => t.toLowerCase().includes(search));
-        const matchesGenre = genre === 'ALL' || game.genre === genre;
-        const matchesTag = !activeTagFilter || game.tags.includes(activeTagFilter);
-
-        return matchesSearch && matchesGenre && matchesTag;
-      });
-
-      renderCatalog(filtered);
-    }
-
-    function resetFilters() {
-      document.getElementById('search-input').value = '';
-      document.getElementById('genre-select').value = 'ALL';
-      activeTagFilter = null;
-      populateTagCloud();
-      filterGames();
-    }
-
-    function renderCatalog(itemsToRender = games.filter(g => g.published)) {
-      const container = document.getElementById('catalog-container');
-      const emptyState = document.getElementById('empty-catalog-state');
-      document.getElementById('game-count-display').textContent = itemsToRender.length;
-      container.innerHTML = '';
-
-      if (itemsToRender.length === 0) {
-        emptyState.classList.remove('hidden');
-        return;
-      } else {
-        emptyState.classList.add('hidden');
-      }
-
-      itemsToRender.forEach(game => {
-        const card = document.createElement('div');
-        card.className = "bg-retro-card border-4 border-retro-border hover:border-retro-neonCyan transition-all duration-200 flex flex-col justify-between group shadow-pixel";
-
-        card.innerHTML = `
-          <div>
-            <div class="relative aspect-video bg-black overflow-hidden border-b-4 border-retro-border">
-              <img src="${game.cover}" alt="${escapeHTML(game.title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/1a1836/00f3ff?text=Retro+Game'">
-              <div class="absolute top-2 right-2 px-2 py-0.5 bg-retro-neonGreen text-black font-pixel text-[8px]">NETLIFY IFRAME</div>
-              <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-black/80 text-retro-neonCyan font-vt text-sm border border-retro-border">${escapeHTML(game.genre)}</div>
-            </div>
-
-            <div class="p-4 space-y-2">
-              <h3 class="font-pixel text-xs text-retro-text group-hover:text-retro-neonCyan transition-colors truncate">
-                ${escapeHTML(game.title)}
-              </h3>
-              <p class="text-retro-textMuted text-xs line-clamp-2 leading-relaxed">
-                ${escapeHTML(game.description)}
-              </p>
-              <div class="flex flex-wrap gap-1 pt-1">
-                ${game.tags.map(tag => `<span class="px-1.5 py-0.5 bg-retro-bg text-retro-textMuted text-[9px] border border-retro-border">#${escapeHTML(tag)}</span>`).join('')}
-              </div>
-            </div>
-          </div>
-
-          <div class="p-4 pt-0 flex items-center gap-2">
-            <button onclick="openGameModal('${game.id}')" class="pixel-btn pixel-btn-green text-[9px] w-full">
-              <i data-lucide="play" class="w-3.5 h-3.5 mr-1"></i> JUGAR AHORA
-            </button>
-            <button onclick="openDecoratorForGame('${game.id}')" class="p-2 bg-retro-bg border-2 border-retro-border hover:border-retro-neonPink text-retro-neonPink" title="Decorar Imagen">
-              <i data-lucide="palette" class="w-4 h-4"></i>
-            </button>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-
-      lucide.createIcons();
-    }
-
-    /* Modal Player */
-    function openGameModal(gameId) {
-      play8BitSound('open');
-      const game = games.find(g => g.id === gameId);
-      if (!game) return;
-
-      document.getElementById('modal-game-title').textContent = game.title;
-      document.getElementById('modal-game-desc').textContent = game.fullDescription || game.description;
-      document.getElementById('modal-game-genre').textContent = game.genre;
-      document.getElementById('modal-direct-link').href = game.playUrl;
-
-      const tagsContainer = document.getElementById('modal-game-tags');
-      tagsContainer.innerHTML = game.tags.map(t => `<span class="px-2 py-0.5 bg-retro-bg border border-retro-border text-retro-textMuted text-[10px]">#${escapeHTML(t)}</span>`).join('');
-
-      const iframe = document.getElementById('game-iframe');
-      iframe.src = game.playUrl;
-
-      document.getElementById('game-modal').classList.remove('hidden');
-    }
-
-    function closeGameModal() {
-      document.getElementById('game-modal').classList.add('hidden');
-      document.getElementById('game-iframe').src = '';
-    }
-
-    function toggleFullscreenIframe() {
-      const wrapper = document.getElementById('iframe-wrapper');
-      if (!document.fullscreenElement) {
-        wrapper.requestFullscreen().catch(err => alert("Error al entrar a pantalla completa"));
-      } else {
-        document.exitFullscreen();
-      }
-    }
-
-    /* ================= IMAGE CUSTOMIZER & DECORATOR STUDIO ================= */
-    function populateDecoratorSelector() {
-      const select = document.getElementById('decorator-game-select');
-      select.innerHTML = games.map(g => `<option value="${g.id}">${g.title}</option>`).join('');
-      loadGameIntoDecorator();
-    }
-
-    function initDecoratorCanvas() {
-      decoratorImage.src = "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80";
-      decoratorImage.onload = updateDecoratorCanvas;
-    }
-
-    function loadGameIntoDecorator() {
-      const id = document.getElementById('decorator-game-select').value;
-      const game = games.find(g => g.id === id);
-      if (game && game.cover) {
-        document.getElementById('decorator-img-url').value = game.cover;
-        decoratorImage.src = game.cover;
-        decoratorImage.onload = updateDecoratorCanvas;
-      }
-    }
-
-    function openDecoratorForGame(gameId) {
-      switchTab('decorator');
-      document.getElementById('decorator-game-select').value = gameId;
-      loadGameIntoDecorator();
-    }
-
-    function handleDecoratorFileUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          decoratorImage.src = evt.target.result;
-          decoratorImage.onload = updateDecoratorCanvas;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function applyDecoratorURL() {
-      const url = document.getElementById('decorator-img-url').value.trim();
-      if (url) {
-        decoratorImage.src = url;
-        decoratorImage.onload = updateDecoratorCanvas;
-      }
-    }
-
-    function setDecoratorFilter(filter) {
-      decoratorFilter = filter;
-      updateDecoratorCanvas();
-    }
-
-    function setDecoratorFrame() {
-      const frameClass = document.getElementById('decorator-frame-select').value;
-      const wrapper = document.getElementById('decorator-frame-wrapper');
-      wrapper.className = `relative max-w-full overflow-hidden transition-all duration-200 ${frameClass !== 'none' ? frameClass : ''}`;
-    }
-
-    function updateDecoratorCanvas() {
-      const canvas = document.getElementById('decorator-canvas');
-      const ctx = canvas.getContext('2d');
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (decoratorFilter === 'pixelate') {
-        // Draw low-res offscreen canvas
-        const offCanvas = document.createElement('canvas');
-        offCanvas.width = 80;
-        offCanvas.height = 48;
-        const offCtx = offCanvas.getContext('2d');
-        offCtx.drawImage(decoratorImage, 0, 0, 80, 48);
-
-        ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(offCanvas, 0, 0, 80, 48, 0, 0, canvas.width, canvas.height);
-      } else {
-        ctx.imageSmoothingEnabled = true;
-        ctx.drawImage(decoratorImage, 0, 0, canvas.width, canvas.height);
-      }
-
-      // Color Palette Overlays
-      if (decoratorFilter === 'cyberpunk') {
-        ctx.fillStyle = 'rgba(255, 0, 127, 0.2)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      } else if (decoratorFilter === 'monochrome') {
-        ctx.fillStyle = 'rgba(57, 255, 20, 0.25)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
-      // Sticker Text Overlay
-      const text = document.getElementById('decorator-text-input').value.trim();
-      if (text) {
-        ctx.font = '24px "Press Start 2P", monospace';
-        ctx.fillStyle = document.getElementById('decorator-text-color').value;
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 4;
-        ctx.strokeText(text, 30, canvas.height - 40);
-        ctx.fillText(text, 30, canvas.height - 40);
-      }
-    }
-
-    function saveDecoratedCoverToGame() {
-      const id = document.getElementById('decorator-game-select').value;
-      const canvas = document.getElementById('decorator-canvas');
-      const dataUrl = canvas.toDataURL('image/png');
-
-      const game = games.find(g => g.id === id);
-      if (game) {
-        game.cover = dataUrl;
-        saveCatalogState();
-        renderCatalog();
-        renderAdminCatalog();
-        alert(`¡La portada decorada fue asignada con éxito al juego '${game.title}'!`);
-      }
-    }
-
-    function downloadDecoratedCanvas() {
-      const canvas = document.getElementById('decorator-canvas');
-      const link = document.createElement('a');
-      link.download = 'pixel-cover.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    }
-
-    /* Admin Actions */
-    function renderAdminCatalog() {
-      const container = document.getElementById('admin-games-list');
-      document.getElementById('admin-game-count').textContent = `${games.length} JUEGOS`;
-      container.innerHTML = '';
-
-      games.forEach(game => {
-        const item = document.createElement('div');
-        item.className = "bg-retro-bg border-2 border-retro-border p-3 flex items-center justify-between gap-3 text-xs";
-        
-        item.innerHTML = `
-          <div class="flex items-center gap-3 truncate">
-            <img src="${game.cover}" class="w-10 h-10 object-cover border border-retro-border flex-shrink-0">
-            <div class="truncate">
-              <div class="font-pixel text-[10px] text-retro-text truncate">${escapeHTML(game.title)}</div>
-              <div class="text-retro-textMuted text-[10px] font-mono truncate">${game.playUrl}</div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 flex-shrink-0">
-            <button onclick="editGame('${game.id}')" class="p-1 bg-retro-card border border-retro-border text-retro-neonCyan"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
-            <button onclick="deleteGame('${game.id}')" class="p-1 bg-retro-card border border-retro-border text-retro-neonPink"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </div>
-        `;
-
-        container.appendChild(item);
-      });
-
-      lucide.createIcons();
-    }
-
-    function generateSlug() {
-      const title = document.getElementById('form-title-input').value;
-      if (!document.getElementById('form-game-id').value) {
-        document.getElementById('form-slug-input').value = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      }
-    }
-
-    function handleGameFormSubmit(e) {
-      e.preventDefault();
-      const existingId = document.getElementById('form-game-id').value;
-      const slug = document.getElementById('form-slug-input').value.trim();
-
-      const gameData = {
-        id: slug,
-        title: document.getElementById('form-title-input').value.trim(),
-        genre: document.getElementById('form-genre-input').value,
-        published: document.getElementById('form-published-input').value === 'true',
-        tags: document.getElementById('form-tags-input').value.split(',').map(t => t.trim()).filter(Boolean),
-        description: document.getElementById('form-short-desc-input').value.trim(),
-        fullDescription: document.getElementById('form-full-desc-input').value.trim(),
-        cover: document.getElementById('form-cover-input').value.trim(),
-        playUrl: document.getElementById('form-playurl-input').value.trim()
-      };
-
-      if (existingId) {
-        const index = games.findIndex(g => g.id === existingId);
-        if (index !== -1) games[index] = gameData;
-      } else {
-        games.push(gameData);
-      }
-
-      saveCatalogState();
-      renderCatalog();
-      renderAdminCatalog();
-      populateTagCloud();
-      populateDecoratorSelector();
-      resetAdminForm();
-      alert("¡Juego guardado con éxito!");
-    }
-
-    function editGame(id) {
-      const game = games.find(g => g.id === id);
-      if (!game) return;
-
-      document.getElementById('form-game-id').value = game.id;
-      document.getElementById('form-title-input').value = game.title;
-      document.getElementById('form-slug-input').value = game.id;
-      document.getElementById('form-genre-input').value = game.genre;
-      document.getElementById('form-published-input').value = String(game.published);
-      document.getElementById('form-tags-input').value = game.tags.join(', ');
-      document.getElementById('form-short-desc-input').value = game.description;
-      document.getElementById('form-full-desc-input').value = game.fullDescription || '';
-      document.getElementById('form-cover-input').value = game.cover;
-      document.getElementById('form-playurl-input').value = game.playUrl || '';
-
-      document.getElementById('form-title').textContent = "EDITAR JUEGO: " + game.title;
-      document.getElementById('cancel-edit-btn').classList.remove('hidden');
-    }
-
-    function resetAdminForm() {
-      document.getElementById('game-form').reset();
-      document.getElementById('form-game-id').value = '';
-      document.getElementById('form-title').textContent = "CREAR O EDITAR JUEGO";
-      document.getElementById('cancel-edit-btn').classList.add('hidden');
-    }
-
-    function deleteGame(id) {
-      if (confirm(`¿Eliminar juego '${id}'?`)) {
-        games = games.filter(g => g.id !== id);
-        saveCatalogState();
-        renderCatalog();
-        renderAdminCatalog();
-        populateTagCloud();
-        populateDecoratorSelector();
-      }
-    }
-
-    function exportJSONCatalog() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(games, null, 2));
-      const anchor = document.createElement('a');
-      anchor.setAttribute("href", dataStr);
-      anchor.setAttribute("download", "games.json");
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-    }
-
-    function importJSONCatalog(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const imported = JSON.parse(evt.target.result);
-          if (Array.isArray(imported)) {
-            games = imported;
-            saveCatalogState();
-            renderCatalog();
-            renderAdminCatalog();
-            populateTagCloud();
-            populateDecoratorSelector();
-            alert("¡Catálogo importado correctamente!");
-          }
-        } catch (err) {
-          alert("Error en el archivo JSON");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetDefaultCatalog() {
-      if (confirm("¿Restablecer los 13 juegos predeterminados alojados en Netlify?")) {
-        games = [...DEFAULT_GAMES];
-        saveCatalogState();
-        renderCatalog();
-        renderAdminCatalog();
-        populateTagCloud();
-        populateDecoratorSelector();
-      }
-    }
-
-    function escapeHTML(str) {
-      if (!str) return '';
-      return str.replace(/[&<>'"]/g, tag => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[tag] || tag));
-    }
-  </script>
+    <div class="row"><span class="px" style="font-size:9px;color:var(--m)">ETIQUETAS:</span><span id="cloud" class="row" style="gap:6px"></span></div>
+    <div class="vt" style="color:var(--m)" aria-live="polite">MOSTRANDO <span id="cnt" style="color:var(--c)">0</span> DE <span data-n>0</span> JUEGOS PUBLICADOS <button class="btn s c" id="rst" hidden>LIMPIAR FILTROS</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="none" hidden><h3 style="color:var(--p);font-size:13px">NO HAY RESULTADOS</h3><p style="color:var(--m)">Prueba con otra búsqueda o limpia los filtros.</p></div>
+</section>
+
+<!-- DECORADOR -->
+<section id="v-decor" hidden><div class="box">
+  <h2 style="color:var(--p);font-size:16px;margin-top:0">ESTUDIO DECORADOR DE PORTADAS</h2>
+  <p class="vt" style="color:var(--m);margin:0 0 16px">Aplica filtros retro, marco y texto. La portada se guarda en este navegador.</p>
+  <div class="two d">
+    <div>
+      <label class="f" for="dg">1. JUEGO</label><select id="dg"></select>
+      <label class="f" for="du">2. IMAGEN (URL https o archivo)</label>
+      <input id="du" placeholder="https://… (el sitio debe permitir CORS)">
+      <div class="row" style="margin-top:8px"><button class="btn v s" id="dload">CARGAR URL</button>
+        <label class="btn c s">SUBIR ARCHIVO<input id="dfile" type="file" accept="image/*" hidden></label>
+        <button class="btn s" id="dauto">PORTADA AUTO</button></div>
+      <label class="f" for="df">3. FILTRO</label>
+      <select id="df"><option value="none">Normal</option><option value="pixel">Píxel 16-bit</option><option value="cyber">Cyberpunk neón</option><option value="gb">Game Boy</option></select>
+      <label class="f" for="dm">4. MARCO</label>
+      <select id="dm"><option value="none">Sin marco</option><option value="#00f3ff">Neón cian</option><option value="#ff007f">Neón magenta</option><option value="#ffe600">Dorado retro</option><option value="dash">Píxel discontinuo</option></select>
+      <label class="f" for="dt">5. TEXTO</label>
+      <div class="row"><input id="dt" maxlength="24" placeholder="PRESS START" style="flex:1"><select id="dc" aria-label="Color del texto"><option value="#39ff14">Verde</option><option value="#00f3ff">Cian</option><option value="#ff007f">Rosa</option><option value="#ffe600">Amarillo</option></select></div>
+      <div class="row" style="margin-top:16px"><button class="btn" id="dsave">ASIGNAR COMO PORTADA</button><button class="btn c" id="ddl">DESCARGAR PNG</button></div>
+    </div>
+    <div style="text-align:center"><h3 style="font-size:10px;color:var(--c)">VISTA PREVIA</h3><canvas id="cv" width="600" height="360"></canvas></div>
+  </div>
+</div></section>
+
+<!-- SOBRE MÍ -->
+<section id="v-about" hidden><div class="box">
+  <h2 style="color:var(--c);font-size:18px;margin-top:0">DESARROLLADOR DE VIDEOJUEGOS INDIE</h2>
+  <p class="vt" style="color:var(--g)"><span data-n>13</span> juegos web alojados en Netlify</p>
+  <p style="color:var(--m);max-width:70ch">Cada juego vive en su propio sitio y se carga aquí dentro de un iframe. Edita este texto en <code>index.html</code> para presentarte.</p>
+  <h3 style="font-size:11px;color:var(--y)">ENLACES DIRECTOS</h3>
+  <div class="grid" id="links" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px"></div>
+</div></section>
+
+<!-- ADMIN -->
+<section id="v-admin" hidden>
+  <div class="box">
+    <h2 style="color:var(--y);font-size:16px;margin-top:0">PANEL DE ADMINISTRACIÓN</h2>
+    <div class="warn"><strong>Importante:</strong> este panel no tiene contraseña y guarda los cambios solo en <em>este navegador</em> (LocalStorage). Los visitantes no los ven. Para publicar: pulsa <em>Exportar JSON</em>, sube el archivo como <code>games.json</code> junto a <code>index.html</code> en tu repositorio y vuelve a desplegar en Netlify.</div>
+    <div class="row"><button class="btn" id="exp">EXPORTAR JSON</button>
+      <label class="btn c">IMPORTAR JSON<input id="imp" type="file" accept=".json,application/json" hidden></label>
+      <button class="btn v" id="rdef">RESTABLECER</button></div>
+  </div>
+  <div class="two" style="margin-top:22px">
+    <form class="box" id="form" autocomplete="off">
+      <h3 id="ft" style="font-size:11px;color:var(--c);margin-top:0">NUEVO JUEGO</h3>
+      <input type="hidden" id="f-old">
+      <label class="f" for="f-title">TÍTULO *</label><input id="f-title" required maxlength="60">
+      <label class="f" for="f-id">SLUG ÚNICO * (a-z, 0-9, guiones)</label><input id="f-id" required pattern="[a-z0-9\-]+" maxlength="50">
+      <div class="row" style="margin-top:0"><div style="flex:1"><label class="f" for="f-genre">GÉNERO *</label><select id="f-genre" class="w100"></select></div>
+        <div style="flex:1"><label class="f" for="f-pub">ESTADO</label><select id="f-pub" class="w100"><option value="1">Publicado</option><option value="0">Borrador</option></select></div></div>
+      <label class="f" for="f-url">URL DEL JUEGO (https) *</label><input id="f-url" type="url" required placeholder="https://mi-juego.netlify.app/">
+      <label class="f" for="f-tags">ETIQUETAS (comas)</label><input id="f-tags" placeholder="Aventura, Pixel Art">
+      <label class="f" for="f-desc">DESCRIPCIÓN CORTA *</label><input id="f-desc" required maxlength="140">
+      <label class="f" for="f-long">DESCRIPCIÓN COMPLETA</label><textarea id="f-long" rows="3" maxlength="800"></textarea>
+      <label class="f" for="f-cover">URL DE PORTADA (opcional, vacío = automática)</label><input id="f-cover" placeholder="https://…">
+      <div class="row" style="margin-top:16px"><button class="btn" type="submit">GUARDAR</button><button class="btn d" type="button" id="fcancel" hidden>CANCELAR</button></div>
+    </form>
+    <div class="box"><h3 style="font-size:11px;color:var(--c);margin-top:0">JUEGOS (<span id="acount">0</span>)</h3><div id="alist" style="max-height:640px;overflow:auto"></div></div>
+  </div>
+</section>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+  <div class="mb">
+    <div class="mh"><h2 id="mt"></h2>
+      <div class="row"><button class="btn c s" id="mfs">PANTALLA COMPLETA</button><a class="btn v s" id="mlink" target="_blank" rel="noopener noreferrer">ABRIR EN PESTAÑA</a><button class="btn d s" id="mx" aria-label="Cerrar">✕ CERRAR</button></div></div>
+    <div class="fr" id="fr"><iframe id="ifr" title="Juego" allow="autoplay; fullscreen; gamepad" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-pointer-lock"></iframe><div class="ld px" id="ld" style="font-size:11px">CARGANDO…</div></div>
+    <div style="padding:0 14px 14px"><p id="md" style="margin:0 0 8px"></p><div class="tags" id="mtags"></div>
+      <p style="color:var(--m);font-size:12px;margin:8px 0 0">¿No carga? Algunos sitios bloquean iframes o tardan en despertar: usa «Abrir en pestaña».</p></div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<footer>RETRO INDIE ARCADE © 2026 · <span data-n>13</span> juegos · Fuentes: Press Start 2P y VT323 (Google Fonts, con alternativa monoespaciada)</footer>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY="retro_indie_v2",TABS=["catalog","decor","about","admin"];
+const GENRES=["Plataformas","Arcade","Carreras","Acción / Shooter","Aventura / RPG","Habilidad / Puzzle"];
+const SEED=[
+["tinyheroes","Tinyheroes","Aventura / RPG","Aventura,Escape,Pixel Art","Escapa de calabozos llenos de trampas con tu pequeño héroe.","https://tinyheroesescape.netlify.app/"],
+["tinyheroes-2","Tinyheroes 2","Aventura / RPG","Aventura,Secuela,Pixel Art","Más enemigos, más mecánicas y rompecabezas más difíciles.","https://tinyheroes2.netlify.app/"],
+["cat-jump","Cat Jump","Plataformas","Plataformas,Gatos,Arcade","Salta entre plataformas con un gatito sin caer al vacío.","https://celadon-treacle-2a0ab3.netlify.app/"],
+["racer-fast","Racer Fast","Carreras","Carreras,Velocidad,Arcade","Esquiva el tráfico y acelera al máximo en pistas retro.","https://racerfast.netlify.app/"],
+["sky-cruiser","Sky Cruiser","Acción / Shooter","Naves,Sci-Fi","Pilota una nave entre obstáculos y caza baterías de energía.","https://glittery-boba-550129.netlify.app/"],
+["halloween-shooter","Halloween Shooter","Acción / Shooter","Halloween,Shooter,Arcade","Sobrevive a oleadas de calabazas, fantasmas y monstruos.","https://zippy-salamander-68220e.netlify.app/"],
+["dont-fall-down","Don't Fall Down","Habilidad / Puzzle","Habilidad,Supervivencia","Mantén el equilibrio sobre plataformas que se desmoronan.","https://profound-truffle-d4dab8.netlify.app/"],
+["yellow-jump-madness","Yellow Jump Madness","Plataformas","Saltos,Física","Rebotes sin fin: calcula el ángulo perfecto para llegar más alto.","https://singular-travesseiro-cc80cb.netlify.app/"],
+["fishy-fishy","Fishy Fishy","Arcade","Peces,Océano,Casual","Come peces más pequeños, crece y evita a los depredadores.","https://stirring-pavlova-cd119e.netlify.app/"],
+["unity-game","Unity Game WebGL","Acción / Shooter","Unity,WebGL,3D","Experiencia exportada desde Unity a WebGL.","https://lighthearted-biscuit-0e20bd.netlify.app/"],
+["snake-game","Snake Classic","Arcade","Snake,Clásico,Retro","La serpiente de siempre con estética de neón.","https://cheerful-lollipop-f08e47.netlify.app/"],
+["button-game","Button Challenge","Habilidad / Puzzle","Casual,Puzzle","¿Qué pasa si pulsas el botón? Un mini-juego de reacción.","https://majestic-vacherin-a434d3.netlify.app/"],
+["viking","Viking Escape","Acción / Shooter","Vikingo,Acción","Combate bestias míticas como un guerrero vikingo.","https://kaleidoscopic-travesseiro-5b1a83.netlify.app/"]
+].map(a=>({id:a[0],title:a[1],genre:a[2],tags:a[3].split(","),description:a[4],longDescription:"",playUrl:a[5],cover:"",published:true}));
+
+/* ---------- validación ---------- */
+const okHttps=u=>{try{return new URL(u).protocol==="https:"}catch{return false}};
+const okCover=u=>u===""||okHttps(u)||/^data:image\/(png|jpeg|webp|svg\+xml)[;,]/.test(u);
+function clean(g){
+  if(!g||typeof g!=="object")return null;
+  const o={id:String(g.id||"").trim(),title:String(g.title||"").trim().slice(0,60),genre:String(g.genre||"Arcade").trim().slice(0,40),
+    tags:(Array.isArray(g.tags)?g.tags:[]).map(t=>String(t).trim().slice(0,30)).filter(Boolean).slice(0,10),
+    description:String(g.description||"").trim().slice(0,140),longDescription:String(g.longDescription||g.fullDescription||"").trim().slice(0,800),
+    playUrl:String(g.playUrl||"").trim(),cover:String(g.cover||"").trim(),published:g.published!==false};
+  if(!/^[a-z0-9-]+$/.test(o.id)||!o.title||!o.description||!okHttps(o.playUrl)||!okCover(o.cover))return null;
+  return o;
+}
+/* ---------- estado ---------- */
+let games=[],filt={q:"",g:"ALL",t:null},last="catalog",lastFocus=null;
+async function init(){
+  let saved=null;
+  try{saved=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("retro_indie_games_13")||"null")}catch{}
+  if(Array.isArray(saved)){games=saved.map(clean).filter(Boolean)}
+  if(!games.length){
+    games=SEED;
+    try{const r=await fetch("games.json",{cache:"no-cache"});if(r.ok){const j=(await r.json());if(Array.isArray(j)){const c=j.map(clean).filter(Boolean);if(c.length)games=c}}}catch{}
+  }
+  const s=localStorage;$("#sfx").onclick=()=>setSfx(!sfx);setSfx(s.sfx!=="0");setCrt(s.crt==="1");
+  refresh();route();
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(games));return true}catch{toast("No se pudo guardar (almacenamiento lleno o bloqueado).",1);return false}}
+function toast(m,err){const t=$("#toast");t.textContent=m;t.className=err?"err":"";t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3500)}
+
+/* ---------- portada automática (sprite simétrico según el nombre) ---------- */
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function art(g){
+  const h=hash(g.id),hue=h%360;let r="";
+  for(let i=0;i<40;i++){const k=hash(g.id+"s"+i);r+=`<rect x="${k%600}" y="${(k>>>9)%200}" width="3" height="3" fill="#fff" opacity=".6"/>`}
+  for(let y=0;y<7;y++)for(let x=0;x<4;x++)if(hash(g.id+x+"_"+y)%100<50)for(const px of new Set([x,6-x]))r+=`<rect x="${209+px*26}" y="${50+y*26}" width="26" height="26" fill="hsl(${(hue+180)%360},100%,62%)"/>`;
+  const t=esc(g.title.length>24?g.title.slice(0,23)+"…":g.title);
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360"><defs><linearGradient id="a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(${hue},60%,10%)"/><stop offset="1" stop-color="hsl(${(hue+60)%360},55%,24%)"/></linearGradient></defs><rect width="600" height="360" fill="url(#a)"/>${r}<rect y="270" width="600" height="90" fill="hsl(${hue},50%,8%)"/><rect y="270" width="600" height="6" fill="hsl(${(hue+180)%360},100%,60%)"/><text x="300" y="325" font-family="'Press Start 2P',monospace" font-size="20" fill="#fff" text-anchor="middle">${t}</text></svg>`;
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+}
+const cover=g=>g.cover||art(g);
+
+/* ---------- catálogo ---------- */
+const pub=()=>games.filter(g=>g.published);
+function refresh(){
+  const gs=[...new Set([...GENRES,...games.map(g=>g.genre)])];
+  const opt=gs.map(x=>`<option>${esc(x)}</option>`).join("");
+  $("#gsel").innerHTML=`<option value="ALL">Todos los géneros</option>`+opt;$("#gsel").value=gs.includes(filt.g)?filt.g:"ALL";
+  $("#f-genre").innerHTML=opt;
+  $("#dg").innerHTML=games.map(g=>`<option value="${esc(g.id)}">${esc(g.title)}</option>`).join("");
+  $$("[data-n]").forEach(e=>e.textContent=pub().length);
+  $("#links").innerHTML=pub().map(g=>`<a class="ai" style="text-decoration:none;color:var(--c)" href="${esc(g.playUrl)}" target="_blank" rel="noopener noreferrer"><span class="n">${esc(g.title)}</span>↗</a>`).join("");
+  renderCloud();renderGrid();renderAdmin();loadDeco();
+}
+function renderCloud(){
+  const tags=[...new Set(pub().flatMap(g=>g.tags))].sort();
+  $("#cloud").innerHTML=tags.map(t=>`<button class="chip${filt.t===t?" on":""}" data-a="tag" data-id="${esc(t)}" aria-pressed="${filt.t===t}">#${esc(t)}</button>`).join("");
+}
+function renderGrid(){
+  const q=filt.q.toLowerCase();
+  const list=pub().filter(g=>(!q||(g.title+" "+g.description+" "+g.tags.join(" ")).toLowerCase().includes(q))&&(filt.g==="ALL"||g.genre===filt.g)&&(!filt.t||g.tags.includes(filt.t)));
+  $("#cnt").textContent=list.length;$("#none").hidden=list.length>0;$("#rst").hidden=!(q||filt.g!=="ALL"||filt.t);
+  $("#grid").innerHTML=list.map(g=>`<article class="card"><div class="im"><img src="${esc(cover(g))}" alt="Portada de ${esc(g.title)}" loading="lazy"><span class="gen">${esc(g.genre)}</span></div>
+  <div class="b"><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p><div class="tags">${g.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div>
+  <div class="row"><button class="btn" style="flex:1" data-a="play" data-id="${esc(g.id)}">▶ JUGAR</button><button class="btn p s" data-a="deco" data-id="${esc(g.id)}" aria-label="Decorar portada de ${esc(g.title)}" title="Decorar portada">🎨</button></div></div></article>`).join("");
+}
+$("#q").oninput=e=>{filt.q=e.target.value;renderGrid()};
+$("#gsel").onchange=e=>{filt.g=e.target.value;renderGrid()};
+$("#rst").onclick=()=>{filt={q:"",g:"ALL",t:null};$("#q").value="";$("#gsel").value="ALL";renderCloud();renderGrid()};
+
+/* ---------- rutas y acciones ---------- */
+const go=h=>{location.hash=h};
+function show(t){if(!TABS.includes(t))t="catalog";last=t;TABS.forEach(v=>{$("#v-"+v).hidden=v!==t;const n=$("#n-"+v);n.classList.toggle("on",v===t);n.setAttribute("aria-current",v===t?"page":"false")})}
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(h.startsWith("play/")){show(last);openM(h.slice(5))}
+  else{closeM();if(h&&h!=="games")show(h);else if(!h||h==="games")show(h==="games"?"catalog":last);if(h==="games")$("#games").scrollIntoView()}
+}
+addEventListener("hashchange",route);
+const A={
+  tab:id=>{go(id);scrollTo(0,0)},
+  play:id=>go("play/"+id),
+  tag:id=>{filt.t=filt.t===id?null:id;renderCloud();renderGrid()},
+  deco:id=>{go("decor");$("#dg").value=id;loadDeco()},
+  edit:id=>{const g=games.find(x=>x.id===id);if(!g)return;
+    $("#f-old").value=g.id;$("#f-title").value=g.title;$("#f-id").value=g.id;$("#f-genre").value=g.genre;$("#f-pub").value=g.published?"1":"0";
+    $("#f-url").value=g.playUrl;$("#f-tags").value=g.tags.join(", ");$("#f-desc").value=g.description;$("#f-long").value=g.longDescription;
+    $("#f-cover").value=g.cover.startsWith("data:")?"":g.cover;$("#ft").textContent="EDITAR: "+g.title;$("#fcancel").hidden=false;$("#f-title").focus()},
+  del:id=>{if(!confirm(`¿Eliminar «${id}»? Se borra solo de tu copia local hasta que exportes.`))return;games=games.filter(g=>g.id!==id);persist();resetForm();refresh();toast("Juego eliminado.")}
+};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;blip();A[b.dataset.a]?.(b.dataset.id)});
+
+/* ---------- reproductor ---------- */
+function openM(id){
+  const g=games.find(x=>x.id===id&&x.published);
+  if(!g){toast("Juego no encontrado.",1);go(last);return}
+  if(!$("#modal").classList.contains("on"))lastFocus=document.activeElement;
+  $("#mt").textContent=g.title;$("#md").textContent=g.longDescription||g.description;$("#mlink").href=g.playUrl;
+  $("#mtags").innerHTML=[g.genre,...g.tags].map(t=>`<span>${esc(t)}</span>`).join("");
+  $("#ld").hidden=false;$("#ifr").src=g.playUrl;$("#modal").classList.add("on");document.body.style.overflow="hidden";$("#mx").focus();
+}
+function closeM(){if(!$("#modal").classList.contains("on"))return;$("#modal").classList.remove("on");$("#ifr").src="about:blank";document.body.style.overflow="";lastFocus?.focus()}
+$("#ifr").onload=()=>{if($("#ifr").src!=="about:blank")$("#ld").hidden=true};
+$("#mx").onclick=()=>go(last);
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")go(last)});
+addEventListener("keydown",e=>{
+  if(!$("#modal").classList.contains("on"))return;
+  if(e.key==="Escape")go(last);
+  if(e.key==="Tab"){const f=$$("#modal button,#modal a[href]");const i=f.indexOf(document.activeElement);if(e.shiftKey&&i<=0){e.preventDefault();f.at(-1).focus()}else if(!e.shiftKey&&i===f.length-1){e.preventDefault();f[0].focus()}}
+});
+$("#mfs").onclick=()=>{const w=$("#fr");document.fullscreenElement?document.exitFullscreen():w.requestFullscreen?.().catch(()=>toast("Tu navegador no permitió pantalla completa.",1))};
+
+/* ---------- sonido y CRT ---------- */
+let sfx=true,ac=null;
+function setSfx(v){sfx=v;localStorage.sfx=v?"1":"0";$("#sfx").textContent="SFX: "+(v?"ON":"OFF");$("#sfx").setAttribute("aria-pressed",v)}
+function setCrt(v){document.body.classList.toggle("crt-on",v);localStorage.crt=v?"1":"0";$("#crt").textContent="CRT: "+(v?"ON":"OFF");$("#crt").setAttribute("aria-pressed",v)}
+$("#crt").onclick=()=>setCrt(!document.body.classList.contains("crt-on"));
+function blip(){if(!sfx)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+  o.type="square";o.frequency.setValueAtTime(400,t);o.frequency.exponentialRampToValueAtTime(800,t+.08);g.gain.setValueAtTime(.08,t);g.gain.linearRampToValueAtTime(.001,t+.08);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.08)}catch{}}
+
+/* ---------- decorador ---------- */
+const cv=$("#cv"),cx=cv.getContext("2d"),img=new Image();let imgOk=false;
+img.onload=()=>{imgOk=true;draw()};img.onerror=()=>{imgOk=false;toast("No se pudo cargar la imagen (¿URL inválida o sin permiso CORS?).",1)};
+function setImg(src,cors){imgOk=false;img.crossOrigin=cors?"anonymous":null;img.src=src}
+function loadDeco(){const g=games.find(x=>x.id===$("#dg").value);if(!g)return;$("#du").value=g.cover.startsWith("data:")?"":g.cover;setImg(cover(g),okHttps(cover(g)))}
+$("#dg").onchange=loadDeco;
+$("#dload").onclick=()=>{const u=$("#du").value.trim();if(!okHttps(u))return toast("Usa una URL https válida.",1);setImg(u,true)};
+$("#dauto").onclick=()=>{const g=games.find(x=>x.id===$("#dg").value);if(g){$("#du").value="";setImg(art(g),false)}};
+$("#dfile").onchange=e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(png|jpeg|webp|gif)$/.test(f.type))return toast("Formato no compatible. Usa PNG, JPG, WEBP o GIF.",1);
+  const r=new FileReader();r.onload=()=>setImg(r.result,false);r.readAsDataURL(f)};
+["df","dm","dt","dc"].forEach(i=>$("#"+i).addEventListener("input",draw));
+function draw(){
+  const W=600,H=360,f=$("#df").value;cx.clearRect(0,0,W,H);if(!imgOk)return;
+  const s=Math.max(W/img.width,H/img.height),w=img.width*s,h=img.height*s,x=(W-w)/2,y=(H-h)/2;
+  if(f==="pixel"){const o=document.createElement("canvas");o.width=100;o.height=60;o.getContext("2d").drawImage(img,x/6,y/6,w/6,h/6);cx.imageSmoothingEnabled=false;cx.drawImage(o,0,0,W,H);cx.imageSmoothingEnabled=true}
+  else{cx.filter=f==="cyber"?"saturate(1.7) contrast(1.15) hue-rotate(-20deg)":f==="gb"?"grayscale(1) contrast(1.2)":"none";cx.drawImage(img,x,y,w,h);cx.filter="none"}
+  if(f==="cyber"){cx.fillStyle="rgba(255,0,127,.18)";cx.fillRect(0,0,W,H)}
+  if(f==="gb"){cx.globalCompositeOperation="multiply";cx.fillStyle="#9bbc0f";cx.fillRect(0,0,W,H);cx.globalCompositeOperation="source-over"}
+  const m=$("#dm").value;if(m!=="none"){cx.lineWidth=16;cx.strokeStyle=m==="dash"?"#3b326d":m;if(m==="dash")cx.setLineDash([24,12]);else{cx.shadowColor=m;cx.shadowBlur=14}cx.strokeRect(8,8,W-16,H-16);cx.setLineDash([]);cx.shadowBlur=0}
+  const t=$("#dt").value.trim();if(t){cx.font='22px "Press Start 2P",monospace';cx.textAlign="center";cx.lineWidth=5;cx.strokeStyle="#000";cx.strokeText(t,W/2,H-34);cx.fillStyle=$("#dc").value;cx.fillText(t,W/2,H-34)}
+}
+function out(type,q){try{return cv.toDataURL(type,q)}catch{toast("La imagen externa bloquea la exportación (CORS). Descárgala y súbela como archivo.",1);return null}}
+$("#dsave").onclick=()=>{const g=games.find(x=>x.id===$("#dg").value),d=imgOk&&out("image/jpeg",.82);if(!g||!d)return;const old=g.cover;g.cover=d;if(persist()){refresh();toast("Portada asignada a «"+g.title+"».")}else g.cover=old};
+$("#ddl").onclick=()=>{const d=imgOk&&out("image/png");if(!d)return;const a=document.createElement("a");a.href=d;a.download="portada-pixel.png";a.click()};
+
+/* ---------- admin ---------- */
+function renderAdmin(){
+  $("#acount").textContent=games.length;
+  $("#alist").innerHTML=games.map(g=>`<div class="ai"><img src="${esc(cover(g))}" alt=""><div class="n">${esc(g.title)}<small>${g.published?"Publicado":"Borrador"} · ${esc(new URL(g.playUrl).host)}</small></div>
+  <button class="btn c s" data-a="edit" data-id="${esc(g.id)}" aria-label="Editar ${esc(g.title)}">✎</button><button class="btn d s" data-a="del" data-id="${esc(g.id)}" aria-label="Eliminar ${esc(g.title)}">🗑</button></div>`).join("")||'<p style="color:var(--m)">Sin juegos.</p>';
+}
+function resetForm(){$("#form").reset();$("#f-old").value="";$("#ft").textContent="NUEVO JUEGO";$("#fcancel").hidden=true;delete $("#f-id").dataset.t}
+$("#fcancel").onclick=resetForm;
+$("#f-id").oninput=e=>e.target.dataset.t=1;
+$("#f-title").oninput=e=>{if(!$("#f-old").value&&!$("#f-id").dataset.t)$("#f-id").value=e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")};
+$("#form").onsubmit=e=>{
+  e.preventDefault();const old=$("#f-old").value,prev=games.find(g=>g.id===old);
+  const g=clean({id:$("#f-id").value.trim(),title:$("#f-title").value,genre:$("#f-genre").value,published:$("#f-pub").value==="1",playUrl:$("#f-url").value,
+    tags:$("#f-tags").value.split(","),description:$("#f-desc").value,longDescription:$("#f-long").value,cover:$("#f-cover").value.trim()||(prev&&prev.cover.startsWith("data:")?prev.cover:"")});
+  if(!g)return toast("Datos inválidos: revisa el slug (a-z, 0-9, guiones), que la URL sea https y los campos obligatorios.",1);
+  if(games.some(x=>x.id===g.id&&x.id!==old))return toast("Ya existe un juego con ese slug.",1);
+  const bak=[...games];games=old?games.map(x=>x.id===old?g:x):[...games,g];
+  if(!persist()){games=bak;return}
+  resetForm();refresh();toast("Juego guardado en este navegador.");
+};
+$("#exp").onclick=()=>{const a=document.createElement("a"),u=URL.createObjectURL(new Blob([JSON.stringify(games,null,2)],{type:"application/json"}));a.href=u;a.download="games.json";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);toast("games.json exportado.")};
+$("#imp").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  try{const j=JSON.parse(await f.text());if(!Array.isArray(j)||!j.length)throw Error("Debe ser una lista con al menos un juego.");
+    const c=j.map(clean),bad=c.findIndex(x=>!x);if(bad>=0)throw Error("El juego nº "+(bad+1)+" no es válido.");
+    const ids=c.map(x=>x.id),dup=ids.find((x,i)=>ids.indexOf(x)!==i);if(dup)throw Error("ID duplicado: "+dup);
+    if(!confirm("Se reemplazará tu catálogo local por "+c.length+" juegos. ¿Continuar?"))return;
+    games=c;if(persist()){resetForm();refresh();toast("Importados "+c.length+" juegos.")}
+  }catch(er){toast("Importación fallida: "+er.message,1)}
+};
+$("#rdef").onclick=()=>{if(confirm("¿Descartar tus cambios locales y volver al catálogo original?")){localStorage.removeItem(KEY);localStorage.removeItem("retro_indie_games_13");location.reload()}};
+init();
+</script>
 </body>
 </html>
