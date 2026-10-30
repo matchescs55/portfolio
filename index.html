@@ -128,7 +128,7 @@ footer{border-top:4px solid var(--bd);background:var(--pan);text-align:center;pa
 <!-- SOBRE MÍ -->
 <section id="v-about" hidden><div class="box">
   <h2 style="color:var(--c);font-size:18px;margin-top:0">DESARROLLADOR DE VIDEOJUEGOS INDIE</h2>
-  <p class="vt" style="color:var(--g)"><span data-n>13</span> juegos web alojados en Netlify</p>
+  <p class="vt" style="color:var(--g)"><span data-n>0</span> juegos web alojados en Netlify</p>
   <p style="color:var(--m);max-width:70ch">Cada juego vive en su propio sitio y se carga aquí dentro de un iframe. Edita este texto en <code>index.html</code> para presentarte.</p>
   <h3 style="font-size:11px;color:var(--y)">ENLACES DIRECTOS</h3>
   <div class="grid" id="links" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px"></div>
@@ -194,7 +194,11 @@ const SEED=[
 ["unity-game","Unity Game WebGL","Acción / Shooter","Unity,WebGL,3D","Experiencia exportada desde Unity a WebGL.","https://lighthearted-biscuit-0e20bd.netlify.app/"],
 ["snake-game","Snake Classic","Arcade","Snake,Clásico,Retro","La serpiente de siempre con estética de neón.","https://cheerful-lollipop-f08e47.netlify.app/"],
 ["button-game","Button Challenge","Habilidad / Puzzle","Casual,Puzzle","¿Qué pasa si pulsas el botón? Un mini-juego de reacción.","https://majestic-vacherin-a434d3.netlify.app/"],
-["viking","Viking Escape","Acción / Shooter","Vikingo,Acción","Combate bestias míticas como un guerrero vikingo.","https://kaleidoscopic-travesseiro-5b1a83.netlify.app/"]
+["viking","Viking Escape","Acción / Shooter","Vikingo,Acción","Combate bestias míticas como un guerrero vikingo.","https://kaleidoscopic-travesseiro-5b1a83.netlify.app/"],
+["resonant-otter","Resonant Otter","Arcade","Nuevo,Arcade,Indie","Explora esta nueva experiencia indie directamente desde el navegador.","https://resonant-otter-e02b1a.netlify.app/"],
+["dreamy-duckanoo","Dreamy Duckanoo","Aventura / RPG","Nuevo,Aventura,Indie","Descubre este juego y disfruta su propuesta desde el navegador.","https://dreamy-duckanoo-55486f.netlify.app/"],
+["pippastel","Pippastel","Habilidad / Puzzle","Nuevo,Creativo,Indie","Una nueva experiencia para ampliar la colección de juegos indie.","https://pippastel.netlify.app/"],
+["packlearning","Packlearning","Habilidad / Puzzle","Nuevo,Aprendizaje,Indie","Explora esta experiencia interactiva dentro de la colección.","https://packlearning.netlify.app/"]
 ].map(a=>({id:a[0],title:a[1],genre:a[2],tags:a[3].split(","),description:a[4],longDescription:"",playUrl:a[5],cover:"",published:true}));
 
 /* ---------- validación ---------- */
@@ -214,10 +218,15 @@ let games=[],filt={q:"",g:"ALL",t:null},last="catalog",lastFocus=null;
 async function init(){
   let saved=null;
   try{saved=JSON.parse(localStorage.getItem(KEY)||localStorage.getItem("retro_indie_games_13")||"null")}catch{}
-  if(Array.isArray(saved)){games=saved.map(clean).filter(Boolean)}
-  if(!games.length){
-    games=SEED;
-    try{const r=await fetch("games.json",{cache:"no-cache"});if(r.ok){const j=(await r.json());if(Array.isArray(j)){const c=j.map(clean).filter(Boolean);if(c.length)games=c}}}catch{}
+  if(Array.isArray(saved)){
+    games=saved.map(clean).filter(Boolean);
+    // Incorpora automáticamente títulos nuevos del catálogo base sin borrar
+    // los juegos ni las personalizaciones guardadas por el visitante.
+    const known=new Set(games.map(g=>g.id));
+    games.push(...SEED.filter(g=>!known.has(g.id)));
+  }else{
+    games=[...SEED];
+    try{const r=await fetch("games.json",{cache:"no-cache"});if(r.ok){const j=await r.json();if(Array.isArray(j)){const c=j.map(clean).filter(Boolean);if(c.length){const ids=new Set(c.map(g=>g.id));games=[...c,...SEED.filter(g=>!ids.has(g.id))]}}}}catch{}
   }
   const s=localStorage;$("#sfx").onclick=()=>setSfx(!sfx);setSfx(s.sfx!=="0");setCrt(s.crt==="1");
   refresh();route();
@@ -255,7 +264,7 @@ function renderCloud(){
 }
 function renderGrid(){
   const q=filt.q.toLowerCase();
-  const list=pub().filter(g=>(!q||(g.title+" "+g.description+" "+g.tags.join(" ")).toLowerCase().includes(q))&&(filt.g==="ALL"||g.genre===filt.g)&&(!filt.t||g.tags.includes(filt.t)));
+  const list=pub().filter(g=>(!q||(g.title+" "+g.description+" "+g.longDescription+" "+g.tags.join(" ")).toLowerCase().includes(q))&&(filt.g==="ALL"||g.genre===filt.g)&&(!filt.t||g.tags.includes(filt.t)));
   $("#cnt").textContent=list.length;$("#none").hidden=list.length>0;$("#rst").hidden=!(q||filt.g!=="ALL"||filt.t);
   $("#grid").innerHTML=list.map(g=>`<article class="card"><div class="im"><img src="${esc(cover(g))}" alt="Portada de ${esc(g.title)}" loading="lazy"><span class="gen">${esc(g.genre)}</span></div>
   <div class="b"><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p><div class="tags">${g.tags.map(t=>`<span>#${esc(t)}</span>`).join("")}</div>
